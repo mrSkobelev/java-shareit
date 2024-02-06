@@ -12,7 +12,7 @@ public interface ItemStorage {
 
     ItemDto createItem(long userId, ItemDto itemDto);
 
-    ItemDto updateItem(ItemDto itemDto, long userId, long ItemId);
+    ItemDto updateItem(ItemDto itemDto, long userId, long itemId);
 
     List<ItemDto> searchItem(String text);
 }
