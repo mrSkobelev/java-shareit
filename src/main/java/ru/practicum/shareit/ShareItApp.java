@@ -9,5 +9,5 @@ public class ShareItApp {
 	public static void main(String[] args) {
 		SpringApplication.run(ShareItApp.class, args);
 	}
-
+	//этот коммент для коммита по исправлению pom. Потом удалю))
 }
