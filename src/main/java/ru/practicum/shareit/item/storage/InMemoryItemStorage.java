@@ -97,8 +97,15 @@ public class InMemoryItemStorage implements ItemStorage {
 
         ItemDto newItemDto = ItemMapper.toItemDto(item);
 
-        List<ItemDto> userItems = getAllItemsByUserId(userId);
-        userItems.removeIf(i -> newItemDto.getId() == i.getId());
+        List<ItemDto> userItems;
+
+        if (itemsByUser.containsKey(userId)) {
+            userItems = getAllItemsByUserId(userId);
+            userItems.removeIf(i -> newItemDto.getId().equals(i.getId()));
+        } else {
+            userItems = new ArrayList<>();
+        }
+
         userItems.add(newItemDto);
         itemsByUser.put(userId, userItems);
 
