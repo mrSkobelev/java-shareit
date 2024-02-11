@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exception.DataNotFoundException;
 import ru.practicum.shareit.exception.EmptyFieldsException;
@@ -13,6 +14,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class InMemoryItemStorage implements ItemStorage {
@@ -27,6 +29,7 @@ public class InMemoryItemStorage implements ItemStorage {
             return ItemMapper.toItemDto(item);
         }
 
+        log.warn("Не найдена вещь с id = {}", itemId);
         throw new DataNotFoundException("Не найдена вещь с id: " + itemId);
     }
 
@@ -72,12 +75,14 @@ public class InMemoryItemStorage implements ItemStorage {
     @Override
     public ItemDto updateItem(ItemDto itemDto, long userId, long itemId) {
         if (!(items.containsKey(itemId))) {
+            log.warn("Не найдена вещь с id = {}", itemId);
             throw new DataNotFoundException("Не найдена вещь с id " + itemId);
         }
 
         Item item = items.get(itemId);
 
         if (item.getOwner() != userId) {
+            log.warn("Только владелец может редактировать вещь.");
             throw new WrongOwnerException("Только владелец может редактировать вещь.");
         }
 
@@ -135,14 +140,17 @@ public class InMemoryItemStorage implements ItemStorage {
 
     private void validateEmptyFields(ItemDto itemDto) {
         if (itemDto.getName() == null) {
+            log.warn("Поля имя должно быть заполнено");
             throw new EmptyFieldsException("Поля имя должно быть заполнено");
         }
 
         if (itemDto.getDescription() == null) {
+            log.warn("Поля описания должно быть заполнено");
             throw new EmptyFieldsException("Поля описания должно быть заполнено");
         }
 
         if (itemDto.getAvailable() == null) {
+            log.warn("Поле доступно должно быть заполнено");
             throw new EmptyFieldsException("Поле доступно должно быть заполнено");
         }
     }
