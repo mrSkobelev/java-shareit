@@ -10,21 +10,15 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
-    @ExceptionHandler
+    @ExceptionHandler({DataNotFoundException.class, WrongOwnerException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleNotFound(final DataNotFoundException e) {
+    public Map<String, String> handleWrongOwner(final Exception e) {
         return Map.of("error", e.getMessage());
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleWrongOwner(final WrongOwnerException e) {
-        return Map.of("error", e.getMessage());
-    }
-
-    @ExceptionHandler
+    @ExceptionHandler({EmptyFieldsException.class, ValidationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> emptyFieldsValidation(final EmptyFieldsException e) {
+    public Map<String, String> emptyFieldsValidation(final Exception e) {
         return Map.of("error", e.getMessage());
     }
 

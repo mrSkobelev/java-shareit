@@ -1,10 +1,8 @@
-package ru.practicum.shareit.booking.model;
+package ru.practicum.shareit.item.model;
 
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,46 +12,33 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 @Entity
-@Table(name = "bookings")
+@Table(name = "comments")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@NamedEntityGraph(name = "Booking.UserAndItem",
-        attributeNodes = {@NamedAttributeNode("item"), @NamedAttributeNode("booker")})
-public class Booking {
+@NamedEntityGraph(name = "Comment.ItemAndUser",
+    attributeNodes = {@NamedAttributeNode("item"), @NamedAttributeNode("author")})
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "booking_id")
+    @Column(name = "comment_id")
     private Long id;
-
-    @NotNull
-    @Column(name = "start_date_time")
-    private LocalDateTime start;
-
-    @NotNull
-    @Column(name = "end_date_time")
-    private LocalDateTime end;
-
-    @NotNull
+    @NotBlank
+    private String text;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;
-
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "booker_id")
-    private User booker;
-
-    @Enumerated(EnumType.STRING)
-    private BookingStatus status;
+    @JoinColumn(name = "author_id")
+    private User author;
+    private LocalDateTime created;
 }
