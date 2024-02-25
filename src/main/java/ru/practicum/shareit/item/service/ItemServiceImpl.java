@@ -126,6 +126,7 @@ public class ItemServiceImpl implements ItemService {
         if (optionalUser.isEmpty()) {
             throw new DataNotFoundException("Не найден пользователь с id: " + userId);
         }
+
         Optional<Item> optionalItem = itemRepository.findById(itemId);
         if (optionalItem.isEmpty()) {
             throw new DataNotFoundException("Не найден товар с id: " + itemId);
@@ -150,6 +151,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> searchItem(String text) {
         log.info("Поиск товара по значению {}", text.toUpperCase());
+
         if (text.isBlank()) {
             return new ArrayList<>();
         }
