@@ -12,7 +12,7 @@ public enum BookingState {
         BookingState[] values = BookingState.values();
 
         for (BookingState val : values) {
-            if (stateParam.equals(val.name())) {
+            if (stateParam.toUpperCase().equals(val.name())) {
                 return val;
             }
         }
