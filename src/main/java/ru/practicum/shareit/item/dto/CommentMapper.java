@@ -1,12 +1,14 @@
 package ru.practicum.shareit.item.dto;
 
 import java.time.LocalDateTime;
+import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
+@Component
 public class CommentMapper {
-    public static Comment toComment(CommentDto commentDto, User author, Item item) {
+    public Comment toComment(CommentDto commentDto, User author, Item item) {
         Comment comment = new Comment();
 
         comment.setText(commentDto.getText());
@@ -17,7 +19,7 @@ public class CommentMapper {
         return comment;
     }
 
-    public static CommentInfoDto toCommentInfoDto(Comment comment) {
+    public CommentInfoDto toCommentInfoDto(Comment comment) {
         CommentInfoDto commentInfoDto = new CommentInfoDto();
 
         commentInfoDto.setId(comment.getId());

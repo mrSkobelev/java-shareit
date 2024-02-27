@@ -9,8 +9,6 @@ import ru.practicum.shareit.item.dto.ItemInfoDto;
 public interface ItemService {
     ItemInfoDto getItemById(long userId, long itemId);
 
-    //List<ItemInfoDto> getAllItems();
-
     List<ItemInfoDto> getAllItemsByUserId(long userId);
 
     ItemDto createItem(long userId, ItemDto itemDto);

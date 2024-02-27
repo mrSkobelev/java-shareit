@@ -1,7 +1,10 @@
 package ru.practicum.shareit.booking.model;
 
 public enum BookingStatus {
-    WAITING, APPROVED, REJECTED, CANCELED;
+    WAITING,
+    APPROVED,
+    REJECTED,
+    CANCELED;
 
     public static BookingStatus from(String status) {
         for (BookingStatus value : BookingStatus.values()) {
@@ -9,6 +12,6 @@ public enum BookingStatus {
                 return value;
             }
         }
-        return null;
+        return WAITING;
     }
 }
