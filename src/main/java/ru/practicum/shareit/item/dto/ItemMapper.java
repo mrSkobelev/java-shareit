@@ -13,6 +13,7 @@ import ru.practicum.shareit.user.model.User;
 @Component
 public class ItemMapper {
     private final CommentMapper commentMapper = new CommentMapper();
+
     public ItemDto toItemDto(Item item) {
         ItemDto itemDto = new ItemDto();
 

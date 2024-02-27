@@ -8,6 +8,8 @@ import ru.practicum.shareit.user.dto.UserMapper;
 @Component
 public class BookingMapper {
     private final ItemMapper itemMapper = new ItemMapper();
+    private final UserMapper userMapper = new UserMapper();
+
     public BookingInfoDto toBookingInfoDto(Booking booking) {
         BookingInfoDto bookingInfoDto = new BookingInfoDto();
 
@@ -15,7 +17,7 @@ public class BookingMapper {
         bookingInfoDto.setStart(booking.getStart());
         bookingInfoDto.setEnd(booking.getEnd());
         bookingInfoDto.setStatus(booking.getStatus());
-        bookingInfoDto.setBooker(UserMapper.toUserDto(booking.getBooker()));
+        bookingInfoDto.setBooker(userMapper.toUserDto(booking.getBooker()));
         bookingInfoDto.setItem(itemMapper.toItemDto(booking.getItem()));
 
         return bookingInfoDto;
