@@ -23,7 +23,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private Long id;
+    private long id;
     @NotBlank
     private String name;
     @NotBlank
@@ -35,7 +35,7 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User u = (User) o;
-        return id.equals(u.id);
+        return id == u.id;
     }
 
     @Override

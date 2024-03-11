@@ -34,7 +34,7 @@ public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "booking_id")
-    private Long id;
+    private long id;
 
     @NotNull
     @Column(name = "start_date_time")
@@ -62,7 +62,7 @@ public class Booking {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Booking booking = (Booking) o;
-        return id == booking.id;
+        return  id == booking.id;
     }
 
     @Override

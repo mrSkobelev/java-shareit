@@ -32,7 +32,7 @@ public class ItemRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "request_id")
-    private Long id;
+    private long id;
     @NotNull
     @NotBlank
     private String description;

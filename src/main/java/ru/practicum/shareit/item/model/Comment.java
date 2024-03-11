@@ -31,7 +31,7 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
-    private Long id;
+    private long id;
     @NotBlank
     private String text;
     @ManyToOne(fetch = FetchType.LAZY)
