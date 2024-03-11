@@ -129,7 +129,7 @@ public class BookingServiceImpl implements BookingService {
         Item item = validItem(bookingDto.getItemId());
         User owner = item.getOwner();
 
-        if (booker.getId().equals(owner.getId())) {
+        if (booker.getId() == owner.getId()) {
             throw new WrongOwnerException("Владелец не может быть арендатором");
         }
         if (!item.getAvailable()) {
@@ -155,7 +155,7 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = validBooking(bookingId);
         User owner = validUser(ownerId);
 
-        if (booking.getBooker().getId().equals(owner.getId())) {
+        if (booking.getBooker().getId() == owner.getId()) {
             throw new WrongOwnerException("Только владелец может менять статус аренды с id: " + bookingId);
         }
 

@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class UserDto {
-    private Long id;
+    private long id;
     private String name;
     @Email(message = "Невалидный email.")
     private String email;

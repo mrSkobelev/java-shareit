@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookingDto {
-    private Long itemId;
+    private long itemId;
     private LocalDateTime start;
     private LocalDateTime end;
 }
