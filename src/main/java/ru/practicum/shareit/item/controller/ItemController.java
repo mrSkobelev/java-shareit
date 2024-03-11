@@ -25,34 +25,47 @@ public class ItemController {
     private final ItemService service;
 
     @GetMapping("/{itemId}")
-    public ItemInfoDto getItemById(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable("itemId") long itemId) {
+    public ItemInfoDto getItemById(@RequestHeader("X-Sharer-User-Id") long userId,
+        @PathVariable("itemId") long itemId) {
+
         return service.getItemById(userId, itemId);
     }
 
     @GetMapping
-    public List<ItemInfoDto> getAllItemsByUserId(@RequestHeader("X-Sharer-User-Id") long userId) {
-        return service.getAllItemsByUserId(userId);
+    public List<ItemInfoDto> getAllItemsByUserId(
+        @RequestHeader("X-Sharer-User-Id") long userId,
+        @RequestParam(name = "from", defaultValue = "0") Integer from,
+        @RequestParam(name = "size", defaultValue = "10") Integer size) {
+
+        return service.getAllItemsByUserId(userId, from, size);
     }
 
     @PostMapping
-    public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") long userId, @Valid @RequestBody ItemDto itemDto) {
+    public ItemDto createItem(@RequestHeader("X-Sharer-User-Id") long userId,
+        @Valid @RequestBody ItemDto itemDto) {
+
         return service.createItem(userId, itemDto);
     }
 
     @PatchMapping("/{itemId}")
     public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") long userId, @RequestBody ItemDto itemDto,
                                 @PathVariable("itemId") long itemId) {
+
         return service.updateItem(itemDto, userId, itemId);
     }
 
     @GetMapping("/search")
-    public List<ItemDto> searchItem(@RequestParam String text) {
-        return service.searchItem(text);
+    public List<ItemDto> searchItem(@RequestParam String text,
+        @RequestParam(name = "from", defaultValue = "0") Integer from,
+        @RequestParam(name = "size", defaultValue = "10") Integer size) {
+
+        return service.searchItem(text, from, size);
     }
 
     @PostMapping("/{itemId}/comment")
     public CommentInfoDto addComment(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable("itemId") long itemId,
                     @RequestBody CommentDto commentDto) {
+
         return service.addComment(userId, itemId, commentDto);
     }
 }

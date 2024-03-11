@@ -4,18 +4,14 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import lombok.experimental.UtilityClass;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
-@Component
-@RequiredArgsConstructor
+@UtilityClass
 public class ItemMapper {
-    private final CommentMapper commentMapper;
-
     public ItemDto toItemDto(Item item) {
         ItemDto itemDto = new ItemDto();
 
@@ -23,6 +19,10 @@ public class ItemMapper {
         itemDto.setName(item.getName());
         itemDto.setDescription(item.getDescription());
         itemDto.setAvailable(item.getAvailable());
+
+        if (item.getItemRequest() != null) {
+            itemDto.setRequestId(item.getItemRequest().getId());
+        }
 
         return itemDto;
     }
@@ -48,7 +48,7 @@ public class ItemMapper {
         itemInfoDto.setAvailable(item.getAvailable());
 
         List<CommentInfoDto> commentInfoDtoList = comments.stream()
-            .map(commentMapper::toCommentInfoDto)
+            .map(CommentMapper::toCommentInfoDto)
             .collect(Collectors.toList());
         itemInfoDto.setComments(commentInfoDtoList);
 

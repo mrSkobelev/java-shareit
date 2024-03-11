@@ -16,30 +16,42 @@ import ru.practicum.shareit.booking.dto.BookingInfoDto;
 import ru.practicum.shareit.booking.service.BookingService;
 
 @RestController
-@RequestMapping(path = "/bookings")
+@RequestMapping("/bookings")
 @RequiredArgsConstructor
 public class BookingController {
     private final BookingService service;
 
     @GetMapping("/{bookingId}")
-    public BookingInfoDto getBookingById(@PathVariable long bookingId, @RequestHeader("X-Sharer-User-Id") long userId) {
+    public BookingInfoDto getBookingById(@PathVariable long bookingId,
+        @RequestHeader("X-Sharer-User-Id") long userId) {
+
         return service.getBookingById(bookingId, userId);
     }
 
     @GetMapping
-    public List<BookingInfoDto> getBookingByUserId(@RequestHeader("X-Sharer-User-Id") long userId,
-        @RequestParam(name = "state", defaultValue = "ALL") String state) {
-        return service.getBookingByUserId(userId, state);
+    public List<BookingInfoDto> getBookingByUserId(
+        @RequestHeader("X-Sharer-User-Id") long userId,
+        @RequestParam(name = "state", defaultValue = "ALL") String state,
+        @RequestParam(name = "from", defaultValue = "0") Integer from,
+        @RequestParam(name = "size", defaultValue = "10") Integer size) {
+
+        return service.getBookingByUserId(userId, state, from, size);
     }
 
     @GetMapping("/owner")
-    public List<BookingInfoDto> getBookingByOwnerId(@RequestHeader("X-Sharer-User-Id") long userId,
-        @RequestParam(name = "state", defaultValue = "ALL") String state) {
-        return service.getBookingByOwnerId(userId, state);
+    public List<BookingInfoDto> getBookingByOwnerId(
+        @RequestHeader("X-Sharer-User-Id") long userId,
+        @RequestParam(name = "state", defaultValue = "ALL") String state,
+        @RequestParam(name = "from", defaultValue = "0") Integer from,
+        @RequestParam(name = "size", defaultValue = "10") Integer size) {
+
+        return service.getBookingByOwnerId(userId, state, from, size);
     }
 
     @PostMapping
-    public BookingInfoDto createBooking(@RequestHeader("X-Sharer-User-Id") long userId, @RequestBody BookingDto bookingDto) {
+    public BookingInfoDto createBooking(@RequestHeader("X-Sharer-User-Id") long userId,
+        @RequestBody BookingDto bookingDto) {
+
         return service.createBooking(userId, bookingDto);
     }
 

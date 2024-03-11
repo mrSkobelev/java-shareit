@@ -9,13 +9,13 @@ import ru.practicum.shareit.item.dto.ItemInfoDto;
 public interface ItemService {
     ItemInfoDto getItemById(long userId, long itemId);
 
-    List<ItemInfoDto> getAllItemsByUserId(long userId);
+    List<ItemInfoDto> getAllItemsByUserId(long userId, Integer from, Integer size);
 
     ItemDto createItem(long userId, ItemDto itemDto);
 
     ItemDto updateItem(ItemDto itemDto, long userId, long itemId);
 
-    List<ItemDto> searchItem(String text);
+    List<ItemDto> searchItem(String text, Integer from, Integer size);
 
     CommentInfoDto addComment(long userId, long itemId, CommentDto commentDto);
 }

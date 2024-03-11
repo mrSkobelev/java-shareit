@@ -17,31 +17,27 @@ import ru.practicum.shareit.user.storage.UserRepository;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final UserRepository storage;
-    private final UserMapper userMapper;
+    private final UserRepository userRepository;
 
     @Override
     public UserDto getUserById(long id) {
         log.info("Получить пользователя с id = {}", id);
 
-        Optional<User> optionalUser = storage.findById(id);
+        User user = userRepository.findById(id).orElseThrow(
+            () -> new DataNotFoundException("Не найден пользователь с id:" + id));
 
-        if (optionalUser.isEmpty()) {
-            throw new DataNotFoundException("Не найден пользователь с id: " + id);
-        }
-
-        return userMapper.toUserDto(optionalUser.get());
+        return UserMapper.toUserDto(user);
     }
 
     @Override
     public List<UserDto> getAllUsers() {
         log.info("Получить всех пользователей");
-        List<User> users = storage.findAll();
+        List<User> users = userRepository.findAll();
 
         List<UserDto> userDtoList = new ArrayList<>();
         if (!users.isEmpty()) {
             for (User u : users) {
-                UserDto userDto = userMapper.toUserDto(u);
+                UserDto userDto = UserMapper.toUserDto(u);
                 userDtoList.add(userDto);
             }
         }
@@ -52,16 +48,18 @@ public class UserServiceImpl implements UserService {
     public UserDto createUser(UserDto userDto) {
         log.info("Создать пользователя " + userDto.getEmail());
         validCreation(userDto);
-        User user = userMapper.toUser(userDto);
-        User savedUser = storage.save(user);
-        return userMapper.toUserDto(savedUser);
+        User user = UserMapper.toUser(userDto);
+        User savedUser = userRepository.save(user);
+        return UserMapper.toUserDto(savedUser);
     }
 
     @Override
     public UserDto updateUser(UserDto userDto, long userId) {
         log.info("Обновить пользователя с id = {}", userId);
 
-        User user = userMapper.toUser(getUserById(userId));
+        validUser(userId);
+
+        User user = UserMapper.toUser(getUserById(userId));
 
         if (userDto.getName() != null) {
             user.setName(userDto.getName());
@@ -70,15 +68,23 @@ public class UserServiceImpl implements UserService {
             user.setEmail(userDto.getEmail());
         }
 
-        User savedUser = storage.save(user);
+        User savedUser = userRepository.save(user);
 
-        return userMapper.toUserDto(savedUser);
+        return UserMapper.toUserDto(savedUser);
     }
 
     @Override
     public void deleteUser(long id) {
         log.info("Удалить пользователя с id = {}", id);
-        storage.deleteById(id);
+        userRepository.deleteById(id);
+    }
+
+    private User validUser(Long userId) {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isEmpty()) {
+            throw new DataNotFoundException("Не найден пользователь с id: " + userId);
+        }
+        return user.get();
     }
 
     private void validCreation(UserDto userDto) {

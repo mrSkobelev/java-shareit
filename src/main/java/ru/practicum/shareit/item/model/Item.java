@@ -26,7 +26,7 @@ import ru.practicum.shareit.user.model.User;
 @NoArgsConstructor
 @AllArgsConstructor
 @NamedEntityGraph(name = "Item.UsersAndRequests",
-        attributeNodes = {@NamedAttributeNode("owner"), @NamedAttributeNode("request")})
+        attributeNodes = {@NamedAttributeNode("owner"), @NamedAttributeNode("itemRequest")})
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,5 +46,18 @@ public class Item {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "request_id")
-    private ItemRequest request;
+    private ItemRequest itemRequest;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Item item = (Item) o;
+        return id == item.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

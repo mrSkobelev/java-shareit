@@ -29,4 +29,17 @@ public class User {
     @NotBlank
     @Email
     private String email;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User u = (User) o;
+        return id.equals(u.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

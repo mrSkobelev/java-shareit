@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,6 @@ public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
-    private final BookingMapper bookingMapper;
 
     @Override
     public BookingInfoDto getBookingById(long bookingId, long userId) {
@@ -43,78 +43,82 @@ public class BookingServiceImpl implements BookingService {
             throw new WrongOwnerException("Доступно только для владельца вещи или автора аренды");
         }
 
-        return bookingMapper.toBookingInfoDto(booking);
+        return BookingMapper.toBookingInfoDto(booking);
     }
 
     @Override
-    public List<BookingInfoDto> getBookingByUserId(long bookerId, String stateParameter) {
+    public List<BookingInfoDto> getBookingByUserId(long bookerId, String stateParameter, Integer from, Integer size) {
         validUser(bookerId);
+        validPagination(from, size);
         List<Booking> bookings;
         BookingState state = BookingState.checkState(stateParameter);
         LocalDateTime now = LocalDateTime.now();
         Sort sort = Sort.by(Direction.DESC, "start");
+        PageRequest pageRequest = PageRequest.of(from / size, size, sort);
 
         switch (state) {
             case ALL:
-                bookings = bookingRepository.findByBooker_Id(bookerId, sort);
+                bookings = bookingRepository.findByBooker_Id(bookerId, pageRequest).getContent();
                 break;
             case FUTURE:
-                bookings = bookingRepository.findByBooker_IdAndStartAfter(bookerId, now, sort);
+                bookings = bookingRepository.findByBooker_IdAndStartAfter(bookerId, now, pageRequest).getContent();
                 break;
             case PAST:
-                bookings = bookingRepository.findByBooker_IdAndEndBefore(bookerId, now, sort);
+                bookings = bookingRepository.findByBooker_IdAndEndBefore(bookerId, now, pageRequest).getContent();
                 break;
             case CURRENT:
-                bookings = bookingRepository.findByBooker_IdAndStartLessThanEqualAndEndAfter(bookerId, now, now, sort);
+                bookings = bookingRepository.findByBooker_IdAndStartLessThanEqualAndEndAfter(bookerId, now, now, pageRequest).getContent();
                 break;
             case WAITING:
-                bookings = bookingRepository.findByBooker_IdAndStatusEquals(bookerId, BookingStatus.WAITING, sort);
+                bookings = bookingRepository.findByBooker_IdAndStatusEquals(bookerId, BookingStatus.WAITING, pageRequest).getContent();
                 break;
             case REJECTED:
-                bookings = bookingRepository.findByBooker_IdAndStatusEquals(bookerId, BookingStatus.REJECTED, sort);
+                bookings = bookingRepository.findByBooker_IdAndStatusEquals(bookerId, BookingStatus.REJECTED, pageRequest).getContent();
                 break;
             default:
                 throw new IllegalArgumentException("Неизвестный статус: " + stateParameter);
         }
 
         return bookings.stream()
-            .map(bookingMapper::toBookingInfoDto)
+            .map(BookingMapper::toBookingInfoDto)
             .collect(Collectors.toList());
     }
 
     @Override
-    public List<BookingInfoDto> getBookingByOwnerId(long ownerId, String stateParameter) {
+    public List<BookingInfoDto> getBookingByOwnerId(long ownerId, String stateParameter, Integer from, Integer size) {
         validUser(ownerId);
+        validPagination(from, size);
         List<Booking> bookings;
         BookingState state = BookingState.checkState(stateParameter);
         LocalDateTime now = LocalDateTime.now();
         Sort sort = Sort.by(Direction.DESC, "start");
+        PageRequest pageRequest = PageRequest.of(from / size, size, sort);
 
         switch (state) {
             case ALL:
-                bookings = bookingRepository.findByItem_Owner_Id(ownerId, sort);
+                bookings = bookingRepository.findByItem_Owner_Id(ownerId, pageRequest).getContent();
                 break;
             case FUTURE:
-                bookings = bookingRepository.findByItem_Owner_IdAndStartAfter(ownerId, now, sort);
+                bookings = bookingRepository.findByItem_Owner_IdAndStartAfter(ownerId, now, pageRequest).getContent();
                 break;
             case PAST:
-                bookings = bookingRepository.findByItem_Owner_IdAndEndBefore(ownerId, now, sort);
+                bookings = bookingRepository.findByItem_Owner_IdAndEndBefore(ownerId, now, pageRequest).getContent();
                 break;
             case CURRENT:
-                bookings = bookingRepository.findByItem_Owner_IdAndStartLessThanEqualAndEndAfter(ownerId, now, now, sort);
+                bookings = bookingRepository.findByItem_Owner_IdAndStartLessThanEqualAndEndAfter(ownerId, now, now, pageRequest).getContent();
                 break;
             case WAITING:
-                bookings = bookingRepository.findByItem_Owner_IdAndStatusEquals(ownerId, BookingStatus.WAITING, sort);
+                bookings = bookingRepository.findByItem_Owner_IdAndStatusEquals(ownerId, BookingStatus.WAITING, pageRequest).getContent();
                 break;
             case REJECTED:
-                bookings = bookingRepository.findByItem_Owner_IdAndStatusEquals(ownerId, BookingStatus.REJECTED, sort);
+                bookings = bookingRepository.findByItem_Owner_IdAndStatusEquals(ownerId, BookingStatus.REJECTED, pageRequest).getContent();
                 break;
             default:
                 throw new IllegalArgumentException("Неизвестный статус: " + stateParameter);
         }
 
         return bookings.stream()
-            .map(bookingMapper::toBookingInfoDto)
+            .map(BookingMapper::toBookingInfoDto)
             .collect(Collectors.toList());
     }
 
@@ -134,7 +138,7 @@ public class BookingServiceImpl implements BookingService {
 
         validDate(bookingDto);
 
-        Booking booking = bookingMapper.toBooking(bookingDto);
+        Booking booking = BookingMapper.toBooking(bookingDto);
         booking.setStatus(BookingStatus.WAITING);
         booking.setItem(item);
         booking.setBooker(booker);
@@ -143,7 +147,7 @@ public class BookingServiceImpl implements BookingService {
 
         log.info("Аренда пользователя с id = {} успешно создана", userId);
 
-        return bookingMapper.toBookingInfoDto(savedBooking);
+        return BookingMapper.toBookingInfoDto(savedBooking);
     }
 
     @Override
@@ -166,7 +170,7 @@ public class BookingServiceImpl implements BookingService {
         }
         Booking savedBooking = bookingRepository.save(booking);
 
-        return bookingMapper.toBookingInfoDto(savedBooking);
+        return BookingMapper.toBookingInfoDto(savedBooking);
     }
 
     private User validUser(long userId) {
@@ -212,6 +216,12 @@ public class BookingServiceImpl implements BookingService {
 
         if (start.isBefore(now)) {
             throw new ValidationException("Начало аренды не может быть в прошлом");
+        }
+    }
+
+    private void validPagination(Integer from, Integer size) {
+        if (from < 0 || size < 0) {
+            throw new ValidationException("Параметры пагинации не должны быть отрицательными");
         }
     }
 }
