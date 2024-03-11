@@ -60,7 +60,7 @@ class BookingServiceImplTest {
         when(bookingRepository.findById(bookingId)).thenReturn(Optional.of(booking));
 
         BookingInfoDto actualBookingInfoDto = bookingService.getBookingById(userId, bookingId);
-        assertEquals(bookingInfoDto.getId(), actualBookingInfoDto.getId());
+        assertEquals(bookingInfoDto, actualBookingInfoDto);
     }
 
     @Test
