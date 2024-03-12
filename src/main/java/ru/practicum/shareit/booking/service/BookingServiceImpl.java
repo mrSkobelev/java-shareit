@@ -133,7 +133,7 @@ public class BookingServiceImpl implements BookingService {
             throw new WrongOwnerException("Владелец не может быть арендатором");
         }
         if (!item.getAvailable()) {
-            throw new ValidationException("Товар с id: " + item.getId() + " недоступна для аренды");
+            throw new ValidationException("Товар с id: " + item.getId() + " недоступен для аренды");
         }
 
         validDate(bookingDto);

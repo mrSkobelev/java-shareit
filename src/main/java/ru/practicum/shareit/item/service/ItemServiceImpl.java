@@ -51,7 +51,8 @@ public class ItemServiceImpl implements ItemService {
     public ItemInfoDto getItemById(long userId, long itemId) {
         log.info("Получить товар с id = {}", itemId);
 
-        Item item = itemRepository.findById(itemId).orElseThrow(() -> new DataNotFoundException(""));
+        Item item = itemRepository.findById(itemId).orElseThrow(
+            () -> new DataNotFoundException("Не найдена вещь с id:" + itemId));
 
         List<Comment> comments = commentRepository.findByItem_Id(itemId);
 

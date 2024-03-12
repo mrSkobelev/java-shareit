@@ -115,4 +115,14 @@ class UserServiceImplTest {
 
         verify(userRepository).deleteById(userId);
     }
+
+    @Test
+    void equalsUserTest() {
+        User user1 = new User();
+        user1.setId(1);
+        User user2 = new User();
+        user2.setId(1);
+
+        assertEquals(user1, user2);
+    }
 }
