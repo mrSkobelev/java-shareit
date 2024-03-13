@@ -26,13 +26,13 @@ import ru.practicum.shareit.user.service.UserService;
 @WebMvcTest(controllers = UserController.class)
 class UserControllerIT {
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @MockBean
-    UserService userService;
+    private UserService userService;
 
     @SneakyThrows
     @Test

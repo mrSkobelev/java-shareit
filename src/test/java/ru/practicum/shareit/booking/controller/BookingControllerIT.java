@@ -28,13 +28,13 @@ import ru.practicum.shareit.booking.service.BookingService;
 @WebMvcTest(controllers = BookingController.class)
 class BookingControllerIT {
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @MockBean
-    BookingService bookingService;
+    private BookingService bookingService;
 
     @SneakyThrows
     @Test

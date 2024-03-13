@@ -22,20 +22,20 @@ import ru.practicum.shareit.user.storage.UserRepository;
 @DataJpaTest
 class BookingRepositoryIT {
     @Autowired
-    ItemRepository itemRepository;
+    private ItemRepository itemRepository;
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
-    ItemRequestsRepository itemRequestRepository;
+    private ItemRequestsRepository itemRequestRepository;
     @Autowired
-    BookingRepository bookingRepository;
-    User owner;
-    User requester;
-    User booker;
-    ItemRequest itemRequest;
-    Item item;
-    Booking booking;
-    List<Item> items;
+    private BookingRepository bookingRepository;
+    private User owner;
+    private User requester;
+    private User booker;
+    private ItemRequest itemRequest;
+    private Item item;
+    private Booking booking;
+    private List<Item> items;
 
     @BeforeEach
     void setUp() {

@@ -30,13 +30,13 @@ import ru.practicum.shareit.item.service.ItemService;
 @WebMvcTest(controllers = ItemController.class)
 class ItemControllerIT {
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @MockBean
-    ItemService itemService;
+    private ItemService itemService;
 
     @SneakyThrows
     @Test

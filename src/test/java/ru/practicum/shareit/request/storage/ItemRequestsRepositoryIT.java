@@ -18,13 +18,13 @@ import ru.practicum.shareit.user.storage.UserRepository;
 @DataJpaTest
 class ItemRequestsRepositoryIT {
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
-    ItemRequestsRepository itemRequestsRepository;
-    User firstRequester;
-    User secondRequester;
-    ItemRequest firstItemRequest;
-    ItemRequest secondItemRequest;
+    private ItemRequestsRepository itemRequestsRepository;
+    private User firstRequester;
+    private User secondRequester;
+    private ItemRequest firstItemRequest;
+    private ItemRequest secondItemRequest;
 
     @BeforeEach
     void setUp() {
