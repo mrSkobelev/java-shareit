@@ -16,6 +16,7 @@ import javax.persistence.NamedEntityGraph;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,13 +29,15 @@ import ru.practicum.shareit.user.model.User;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NamedEntityGraph(name = "Booking.UserAndItem",
         attributeNodes = {@NamedAttributeNode("item"), @NamedAttributeNode("booker")})
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "booking_id")
-    private Long id;
+    @EqualsAndHashCode.Include
+    private long id;
 
     @NotNull
     @Column(name = "start_date_time")

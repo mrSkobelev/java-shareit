@@ -13,6 +13,7 @@ import javax.persistence.NamedEntityGraph;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,13 +26,15 @@ import ru.practicum.shareit.user.model.User;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NamedEntityGraph(name = "Item.UsersAndRequests",
-        attributeNodes = {@NamedAttributeNode("owner"), @NamedAttributeNode("request")})
+        attributeNodes = {@NamedAttributeNode("owner"), @NamedAttributeNode("itemRequest")})
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "item_id")
-    private Long id;
+    @EqualsAndHashCode.Include
+    private long id;
 
     @NotBlank
     private String name;
@@ -46,5 +49,5 @@ public class Item {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "request_id")
-    private ItemRequest request;
+    private ItemRequest itemRequest;
 }

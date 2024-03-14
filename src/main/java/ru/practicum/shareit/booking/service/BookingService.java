@@ -7,9 +7,9 @@ import ru.practicum.shareit.booking.dto.BookingInfoDto;
 public interface BookingService {
     BookingInfoDto getBookingById(long bookingId, long userId);
 
-    List<BookingInfoDto> getBookingByUserId(long bookerId, String stateParameter);
+    List<BookingInfoDto> getBookingByUserId(long bookerId, String stateParameter, Integer from, Integer size);
 
-    List<BookingInfoDto> getBookingByOwnerId(long ownerId, String stateParameter);
+    List<BookingInfoDto> getBookingByOwnerId(long ownerId, String stateParameter, Integer from, Integer size);
 
     BookingInfoDto createBooking(long userId, BookingDto bookingDto);
 

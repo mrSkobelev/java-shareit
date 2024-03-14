@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class CommentInfoDto {
-    private Long id;
+    private long id;
     private String text;
     private String authorName;
     private LocalDateTime created;

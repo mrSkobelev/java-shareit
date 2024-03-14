@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.model.Booking;
@@ -30,6 +31,8 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.CommentRepository;
 import ru.practicum.shareit.item.storage.ItemRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.storage.ItemRequestsRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
@@ -37,18 +40,19 @@ import ru.practicum.shareit.user.storage.UserRepository;
 @Service
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
+
+    private final ItemRequestsRepository itemRequestsRepository;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
-    private final CommentMapper commentMapper;
-    private final ItemMapper itemMapper;
 
     @Override
     public ItemInfoDto getItemById(long userId, long itemId) {
         log.info("Получить товар с id = {}", itemId);
 
-        Item item = itemRepository.findById(itemId).orElseThrow(() -> new DataNotFoundException(""));
+        Item item = itemRepository.findById(itemId).orElseThrow(
+            () -> new DataNotFoundException("Не найдена вещь с id:" + itemId));
 
         List<Comment> comments = commentRepository.findByItem_Id(itemId);
 
@@ -56,18 +60,21 @@ public class ItemServiceImpl implements ItemService {
             List<Booking> bookings = bookingRepository.findByItem_IdAndStatusNot(itemId, BookingStatus.REJECTED);
             log.debug("Выгружена вещь с id = {}", itemId);
 
-            return itemMapper.toItemInfoDto(item, bookings, comments);
+            return ItemMapper.toItemInfoDto(item, bookings, comments);
         }
         log.debug("Выгружена вещь с id = {}", itemId);
 
-        return itemMapper.toItemInfoDto(item, new ArrayList<>(), comments);
+        return ItemMapper.toItemInfoDto(item, new ArrayList<>(), comments);
     }
 
     @Override
-    public List<ItemInfoDto> getAllItemsByUserId(long userId) {
+    public List<ItemInfoDto> getAllItemsByUserId(long userId, Integer from, Integer size) {
         log.info("Получить все товары пользователя с id = {}", userId);
 
-        List<Item> items = itemRepository.findByOwnerId(userId);
+        validPagination(from, size);
+
+        PageRequest pageRequest = PageRequest.of(from / size, size);
+        List<Item> items = itemRepository.findByOwnerId(userId, pageRequest).getContent();
 
         Map<Item, List<Comment>> itemCommentsMap = commentRepository.findByItemIn(items, Sort.by(DESC, "created"))
             .stream()
@@ -80,7 +87,7 @@ public class ItemServiceImpl implements ItemService {
         log.debug("Выгружен список товаров пользователя с id = {}", userId);
 
         return items.stream()
-            .map(item -> itemMapper.toItemInfoDto(item,
+            .map(item -> ItemMapper.toItemInfoDto(item,
                 itemBookingsMap.getOrDefault(item, Collections.emptyList()),
                 itemCommentsMap.getOrDefault(item, Collections.emptyList())))
             .sorted(Comparator.comparing(ItemInfoDto::getId))
@@ -91,32 +98,26 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto createItem(long userId, ItemDto itemDto) {
         log.info("Создать товар пользователя с id = {}", userId);
 
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) {
-            throw new DataNotFoundException("Не найден пользователь с id: " + userId);
+        User user = validUser(userId);
+        Item item = ItemMapper.toItem(itemDto, user);
+
+        if (itemDto.getRequestId() != null) {
+            ItemRequest itemRequest = validItemRequest(itemDto.getRequestId());
+            item.setItemRequest(itemRequest);
         }
 
-        Item item = itemMapper.toItem(itemDto, optionalUser.get());
         Item savedItem = itemRepository.save(item);
 
-        return itemMapper.toItemDto(savedItem);
+        return ItemMapper.toItemDto(savedItem);
     }
 
     @Override
     public ItemDto updateItem(ItemDto itemDto, long userId, long itemId) {
         log.info("Обновить товар с id = {}", itemId);
 
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) {
-            throw new DataNotFoundException("Не найден пользователь с id: " + userId);
-        }
+        validUser(userId);
+        Item item = validItem(itemId);
 
-        Optional<Item> optionalItem = itemRepository.findById(itemId);
-        if (optionalItem.isEmpty()) {
-            throw new DataNotFoundException("Не найден товар с id: " + itemId);
-        }
-
-        Item item = optionalItem.get();
         if (itemDto.getName() != null) {
             item.setName(itemDto.getName());
         }
@@ -129,21 +130,25 @@ public class ItemServiceImpl implements ItemService {
 
         itemRepository.save(item);
 
-        return itemMapper.toItemDto(item);
+        return ItemMapper.toItemDto(item);
     }
 
     @Override
-    public List<ItemDto> searchItem(String text) {
+    public List<ItemDto> searchItem(String text, Integer from, Integer size) {
         log.info("Поиск товара по значению {}", text.toUpperCase());
+
+        validPagination(from, size);
 
         if (text.isBlank()) {
             return new ArrayList<>();
         }
+
+        PageRequest pageRequest = PageRequest.of(from / size, size);
         List<ItemDto> itemDtoList = new ArrayList<>();
-        List<Item> items = itemRepository.searchItemByText(text);
+        List<Item> items = itemRepository.searchItemByText(text, pageRequest).getContent();
         if (!items.isEmpty()) {
             for (Item i : items) {
-                itemDtoList.add(itemMapper.toItemDto(i));
+                itemDtoList.add(ItemMapper.toItemDto(i));
             }
         }
 
@@ -165,10 +170,10 @@ public class ItemServiceImpl implements ItemService {
 
         User author = validUser(userId);
         Item item = validItem(itemId);
-        Comment comment = commentMapper.toComment(commentDto, author, item);
+        Comment comment = CommentMapper.toComment(commentDto, author, item);
         Comment savedComment = commentRepository.save(comment);
 
-        return commentMapper.toCommentInfoDto(savedComment);
+        return CommentMapper.toCommentInfoDto(savedComment);
     }
 
     private User validUser(Long userId) {
@@ -179,12 +184,12 @@ public class ItemServiceImpl implements ItemService {
         return user.get();
     }
 
-    private Booking validBooking(Long bookingId) {
-        Optional<Booking> optionalBooking = bookingRepository.findById(bookingId);
-        if (optionalBooking.isEmpty()) {
-            throw new DataNotFoundException("Не найдена аренда с id: " + bookingId);
+    private ItemRequest validItemRequest(Long itemRequestId) {
+        Optional<ItemRequest> optionalItemRequest = itemRequestsRepository.findById(itemRequestId);
+        if (optionalItemRequest.isEmpty()) {
+            throw new DataNotFoundException("Не найден запрос аренды с id: " + itemRequestId);
         }
-        return optionalBooking.get();
+        return optionalItemRequest.get();
     }
 
     private Item validItem(Long itemId) {
@@ -193,5 +198,11 @@ public class ItemServiceImpl implements ItemService {
             throw new DataNotFoundException("Не найден товар с id: " + itemId);
         }
         return item.get();
+    }
+
+    private void validPagination(Integer from, Integer size) {
+        if (from < 0 || size < 0) {
+            throw new ValidationException("Параметры пагинации не должны быть отрицательными");
+        }
     }
 }

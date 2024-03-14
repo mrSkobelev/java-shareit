@@ -14,6 +14,7 @@ import javax.persistence.NamedEntityGraph;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,13 +26,15 @@ import ru.practicum.shareit.user.model.User;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NamedEntityGraph(name = "Comment.ItemAndUser",
     attributeNodes = {@NamedAttributeNode("item"), @NamedAttributeNode("author")})
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
-    private Long id;
+    @EqualsAndHashCode.Include
+    private long id;
     @NotBlank
     private String text;
     @ManyToOne(fetch = FetchType.LAZY)
