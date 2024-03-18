@@ -12,7 +12,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -35,7 +34,6 @@ public class ItemRequest {
     @Column(name = "request_id")
     @EqualsAndHashCode.Include
     private long id;
-    @NotBlank
     private String description;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "requester_id")

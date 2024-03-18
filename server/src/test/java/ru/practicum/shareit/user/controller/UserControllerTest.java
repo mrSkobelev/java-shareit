@@ -14,7 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.practicum.shareit.exception.DataNotFoundException;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -42,9 +42,9 @@ public class UserControllerTest {
     void getUserById_whenUserNotFound_thenReturnThrow() {
         long userId = 1L;
 
-        doThrow(DataNotFoundException.class).when(userService).getUserById(userId);
+        doThrow(NotFoundException.class).when(userService).getUserById(userId);
 
-        assertThrows(DataNotFoundException.class, () -> userController.getUserById(userId));
+        assertThrows(NotFoundException.class, () -> userController.getUserById(userId));
     }
 
     @Test

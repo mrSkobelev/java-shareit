@@ -27,7 +27,7 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingState;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.storage.BookingRepository;
-import ru.practicum.shareit.exception.DataNotFoundException;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.exception.WrongOwnerException;
 import ru.practicum.shareit.item.model.Item;
@@ -80,7 +80,7 @@ class BookingServiceImplTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(bookingRepository.findById(bookingId)).thenReturn(Optional.empty());
 
-        DataNotFoundException ex = assertThrows(DataNotFoundException.class,
+        NotFoundException ex = assertThrows(NotFoundException.class,
             () -> bookingService.getBookingById(bookingId, userId));
 
         assertEquals("Не найдена аренда с id: " + bookingId, ex.getMessage());

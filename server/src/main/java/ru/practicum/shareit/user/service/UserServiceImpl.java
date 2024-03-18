@@ -6,7 +6,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exception.DataNotFoundException;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.EmptyFieldsException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
         log.info("Получить пользователя с id = {}", id);
 
         User user = userRepository.findById(id).orElseThrow(
-            () -> new DataNotFoundException("Не найден пользователь с id:" + id));
+            () -> new NotFoundException("Не найден пользователь с id:" + id));
 
         return UserMapper.toUserDto(user);
     }
@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
     private User validUser(Long userId) {
         Optional<User> user = userRepository.findById(userId);
         if (user.isEmpty()) {
-            throw new DataNotFoundException("Не найден пользователь с id: " + userId);
+            throw new NotFoundException("Не найден пользователь с id: " + userId);
         }
         return user.get();
     }

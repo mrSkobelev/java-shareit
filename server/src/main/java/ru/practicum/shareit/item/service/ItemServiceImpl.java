@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.storage.BookingRepository;
-import ru.practicum.shareit.exception.DataNotFoundException;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.CommentInfoDto;
@@ -52,7 +52,7 @@ public class ItemServiceImpl implements ItemService {
         log.info("Получить товар с id = {}", itemId);
 
         Item item = itemRepository.findById(itemId).orElseThrow(
-            () -> new DataNotFoundException("Не найдена вещь с id:" + itemId));
+            () -> new NotFoundException("Не найдена вещь с id:" + itemId));
 
         List<Comment> comments = commentRepository.findByItem_Id(itemId);
 
@@ -179,7 +179,7 @@ public class ItemServiceImpl implements ItemService {
     private User validUser(Long userId) {
         Optional<User> user = userRepository.findById(userId);
         if (user.isEmpty()) {
-            throw new DataNotFoundException("Не найден пользователь с id: " + userId);
+            throw new NotFoundException("Не найден пользователь с id: " + userId);
         }
         return user.get();
     }
@@ -187,7 +187,7 @@ public class ItemServiceImpl implements ItemService {
     private ItemRequest validItemRequest(Long itemRequestId) {
         Optional<ItemRequest> optionalItemRequest = itemRequestsRepository.findById(itemRequestId);
         if (optionalItemRequest.isEmpty()) {
-            throw new DataNotFoundException("Не найден запрос аренды с id: " + itemRequestId);
+            throw new NotFoundException("Не найден запрос аренды с id: " + itemRequestId);
         }
         return optionalItemRequest.get();
     }
@@ -195,7 +195,7 @@ public class ItemServiceImpl implements ItemService {
     private Item validItem(Long itemId) {
         Optional<Item> item = itemRepository.findById(itemId);
         if (item.isEmpty()) {
-            throw new DataNotFoundException("Не найден товар с id: " + itemId);
+            throw new NotFoundException("Не найден товар с id: " + itemId);
         }
         return item.get();
     }

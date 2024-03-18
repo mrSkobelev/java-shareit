@@ -17,7 +17,7 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingState;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.storage.BookingRepository;
-import ru.practicum.shareit.exception.DataNotFoundException;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.exception.WrongOwnerException;
 import ru.practicum.shareit.item.model.Item;
@@ -176,7 +176,7 @@ public class BookingServiceImpl implements BookingService {
     private User validUser(long userId) {
         Optional<User> user = userRepository.findById(userId);
         if (user.isEmpty()) {
-            throw new DataNotFoundException("Не найден пользователь с id: " + userId);
+            throw new NotFoundException("Не найден пользователь с id: " + userId);
         }
         return user.get();
     }
@@ -184,7 +184,7 @@ public class BookingServiceImpl implements BookingService {
     private Booking validBooking(long bookingId) {
         Optional<Booking> optionalBooking = bookingRepository.findById(bookingId);
         if (optionalBooking.isEmpty()) {
-            throw new DataNotFoundException("Не найдена аренда с id: " + bookingId);
+            throw new NotFoundException("Не найдена аренда с id: " + bookingId);
         }
         return optionalBooking.get();
     }
@@ -192,7 +192,7 @@ public class BookingServiceImpl implements BookingService {
     private Item validItem(long itemId) {
         Optional<Item> item = itemRepository.findById(itemId);
         if (item.isEmpty()) {
-            throw new DataNotFoundException("Не найден товар с id: " + itemId);
+            throw new NotFoundException("Не найден товар с id: " + itemId);
         }
         return item.get();
     }

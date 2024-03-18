@@ -14,7 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exception.DataNotFoundException;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
@@ -102,7 +102,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private User validUser(long userId) {
         Optional<User> user = userRepository.findById(userId);
         if (user.isEmpty()) {
-            throw new DataNotFoundException("Не найден пользователь с id: " + userId);
+            throw new NotFoundException("Не найден пользователь с id: " + userId);
         }
         return user.get();
     }
@@ -110,7 +110,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private ItemRequest validItemRequest(long requestId) {
         Optional<ItemRequest> itemRequest = itemRequestsRepository.findById(requestId);
         if (itemRequest.isEmpty()) {
-            throw new DataNotFoundException("Не найдена аренда с id: " + requestId);
+            throw new NotFoundException("Не найдена аренда с id: " + requestId);
         }
         return itemRequest.get();
     }

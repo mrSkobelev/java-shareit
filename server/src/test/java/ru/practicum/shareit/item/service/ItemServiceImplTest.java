@@ -24,7 +24,7 @@ import org.springframework.data.domain.Sort;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.storage.BookingRepository;
-import ru.practicum.shareit.exception.DataNotFoundException;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.CommentInfoDto;
@@ -101,7 +101,7 @@ class ItemServiceImplTest {
 
         when(itemRepository.findById(wrongItemId)).thenReturn(Optional.empty());
 
-        DataNotFoundException ex = assertThrows(DataNotFoundException.class,
+        NotFoundException ex = assertThrows(NotFoundException.class,
             () -> itemService.getItemById(userId, wrongItemId));
 
         assertEquals("Не найдена вещь с id:" + wrongItemId, ex.getMessage());
@@ -194,7 +194,7 @@ class ItemServiceImplTest {
         when(userRepository.findById(ownerId)).thenReturn(Optional.of(owner));
         when(itemRequestRepository.findById(requestId)).thenReturn(Optional.empty());
 
-        DataNotFoundException ex = assertThrows(DataNotFoundException.class,
+        NotFoundException ex = assertThrows(NotFoundException.class,
             () -> itemService.createItem(ownerId, itemDto));
 
         assertEquals("Не найден запрос аренды с id: " + requestId, ex.getMessage());
@@ -214,7 +214,7 @@ class ItemServiceImplTest {
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        DataNotFoundException ex = assertThrows(DataNotFoundException.class,
+        NotFoundException ex = assertThrows(NotFoundException.class,
             () -> itemService.createItem(userId, itemDto));
 
         assertEquals("Не найден пользователь с id: " + userId, ex.getMessage());
@@ -315,7 +315,7 @@ class ItemServiceImplTest {
 
         ItemDto itemDto = new ItemDto();
 
-        DataNotFoundException ex = assertThrows(DataNotFoundException.class,
+        NotFoundException ex = assertThrows(NotFoundException.class,
             () -> itemService.updateItem(itemDto, userId, itemId));
 
         assertEquals("Не найден пользователь с id: " + userId, ex.getMessage());
@@ -333,7 +333,7 @@ class ItemServiceImplTest {
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
-        DataNotFoundException ex = assertThrows(DataNotFoundException.class,
+        NotFoundException ex = assertThrows(NotFoundException.class,
             () -> itemService.updateItem(itemDto, userId, itemId));
 
         assertEquals("Не найден товар с id: " + itemId, ex.getMessage());
