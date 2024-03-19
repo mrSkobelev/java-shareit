@@ -14,7 +14,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -38,9 +37,8 @@ class ItemControllerIT {
     @MockBean
     private ItemService itemService;
 
-    @SneakyThrows
     @Test
-    void getItemById_whenItemCreated_thenReturnItem() {
+    void getItemById_whenItemCreated_thenReturnItem() throws Exception {
         long itemId = 1L;
         long userId = 1L;
         ItemInfoDto itemInfoDto = new ItemInfoDto();
@@ -59,9 +57,8 @@ class ItemControllerIT {
         assertEquals(result, objectMapper.writeValueAsString(itemInfoDto));
     }
 
-    @SneakyThrows
     @Test
-    void getAllItemsByUserId_whenItemsCreated_thenReturnItemList() {
+    void getAllItemsByUserId_whenItemsCreated_thenReturnItemList() throws Exception {
         List<ItemInfoDto> itemInfoDtoList = List.of(new ItemInfoDto());
 
         when(itemService.getAllItemsByUserId(anyLong(), anyInt(), anyInt()))
@@ -78,9 +75,8 @@ class ItemControllerIT {
         assertEquals(objectMapper.writeValueAsString(itemInfoDtoList), result);
     }
 
-    @SneakyThrows
     @Test
-    void createItem_whenItemIsValid_thenReturnItemAndEqualsFields() {
+    void createItem_whenItemIsValid_thenReturnItemAndEqualsFields() throws Exception {
         ItemDto itemDto = new ItemDto();
         itemDto.setName("name");
         itemDto.setDescription("description");
@@ -104,9 +100,8 @@ class ItemControllerIT {
         assertEquals(result, objectMapper.writeValueAsString(itemDto));
     }
 
-    @SneakyThrows
     @Test
-    void updateItem_whenItemIsValid_thenReturnUpdatedItem() {
+    void updateItem_whenItemIsValid_thenReturnUpdatedItem() throws Exception {
         long itemId = 0L;
         ItemDto itemDto = new ItemDto();
 
@@ -124,9 +119,8 @@ class ItemControllerIT {
         assertEquals(objectMapper.writeValueAsString(itemDto), result);
     }
 
-    @SneakyThrows
     @Test
-    void searchItem_whenTextIsPresent_thenReturnItemList() {
+    void searchItem_whenTextIsPresent_thenReturnItemList() throws Exception {
         String text = "text";
         int from = 0;
         int size = 1;
@@ -151,9 +145,8 @@ class ItemControllerIT {
         assertEquals(result, objectMapper.writeValueAsString(itemDtoList));
     }
 
-    @SneakyThrows
     @Test
-    void addComment_whenCommentValid_thenReturnComment() {
+    void addComment_whenCommentValid_thenReturnComment() throws Exception {
         CommentInfoDto commentInfoDto = new CommentInfoDto();
         commentInfoDto.setText("test");
 

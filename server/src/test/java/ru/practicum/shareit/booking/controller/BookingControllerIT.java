@@ -15,7 +15,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
 import java.util.List;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -36,9 +35,8 @@ class BookingControllerIT {
     @MockBean
     private BookingService bookingService;
 
-    @SneakyThrows
     @Test
-    void getBookingById_whenBookingCreated_thenStatusOk() {
+    void getBookingById_whenBookingCreated_thenStatusOk() throws Exception {
         long bookingId = 0L;
         BookingInfoDto bookingInfoDto = new BookingInfoDto();
 
@@ -55,9 +53,8 @@ class BookingControllerIT {
         assertEquals(objectMapper.writeValueAsString(bookingInfoDto), result);
     }
 
-    @SneakyThrows
     @Test
-    void getBookingByUserId_whenParametersIsValid_thenStatusOk() {
+    void getBookingByUserId_whenParametersIsValid_thenStatusOk() throws Exception {
         String state = "all";
         int from = 0;
         int size = 1;
@@ -81,9 +78,8 @@ class BookingControllerIT {
 
     }
 
-    @SneakyThrows
     @Test
-    void getBookingByOwnerId_whenParametersIsValid_thenStatusOk() {
+    void getBookingByOwnerId_whenParametersIsValid_thenStatusOk() throws Exception {
         String state = "all";
         int from = 0;
         int size = 1;
@@ -107,9 +103,8 @@ class BookingControllerIT {
 
     }
 
-    @SneakyThrows
     @Test
-    void createBooking_whenBookingIsValid_thenStatusOk() {
+    void createBooking_whenBookingIsValid_thenStatusOk() throws Exception {
         BookingInfoDto bookingInfoDto = new BookingInfoDto();
         BookingDto bookingDto = new BookingDto();
         LocalDateTime now = LocalDateTime.now();
@@ -131,9 +126,8 @@ class BookingControllerIT {
         assertEquals(objectMapper.writeValueAsString(bookingInfoDto), result);
     }
 
-    @SneakyThrows
     @Test
-    void approvedBooking_whenBookingCreated_thenStatusOk() {
+    void approvedBooking_whenBookingCreated_thenStatusOk() throws Exception {
         long bookingId = 1L;
         Boolean approved = true;
 

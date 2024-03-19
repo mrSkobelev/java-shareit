@@ -11,7 +11,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -31,9 +30,8 @@ class ItemRequestControllerIT {
     @MockBean
     private ItemRequestService itemRequestService;
 
-    @SneakyThrows
     @Test
-    void createItemRequest_whenRequestValid_thenStatusOk() {
+    void createItemRequest_whenRequestValid_thenStatusOk() throws Exception {
         ItemRequestDto itemRequestDto = new ItemRequestDto();
         itemRequestDto.setDescription("description");
         ItemRequestInfoDto itemRequestInfoDto = new ItemRequestInfoDto();
@@ -52,9 +50,8 @@ class ItemRequestControllerIT {
         assertEquals(objectMapper.writeValueAsString(itemRequestInfoDto), result);
     }
 
-    @SneakyThrows
     @Test
-    void getRequestsByUserId_whenUserCreateRequest_thenStatusOk() {
+    void getRequestsByUserId_whenUserCreateRequest_thenStatusOk() throws Exception {
         ItemRequestInfoDto itemRequestInfoDto = new ItemRequestInfoDto();
         List<ItemRequestInfoDto> itemRequestInfoDtoList = List.of(itemRequestInfoDto);
 
@@ -70,9 +67,8 @@ class ItemRequestControllerIT {
         assertEquals(objectMapper.writeValueAsString(itemRequestInfoDtoList), result);
     }
 
-    @SneakyThrows
     @Test
-    void getRequests_whenRequestsCreated_thenStatusOk() {
+    void getRequests_whenRequestsCreated_thenStatusOk() throws Exception {
         int from = 0;
         int size = 1;
         ItemRequestInfoDto itemRequestInfoDto = new ItemRequestInfoDto();
@@ -94,9 +90,8 @@ class ItemRequestControllerIT {
 
     }
 
-    @SneakyThrows
     @Test
-    void getRequestById() {
+    void getRequestById() throws Exception {
         long requestId = 1L;
         ItemRequestInfoDto itemRequestInfoDto = new ItemRequestInfoDto();
 

@@ -12,7 +12,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
-import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -33,9 +32,8 @@ class UserControllerIT {
     @MockBean
     private UserService userService;
 
-    @SneakyThrows
     @Test
-    void getUserById_whenUserIsCreated_thenStatusOk() {
+    void getUserById_whenUserIsCreated_thenStatusOk() throws Exception {
         long userId = 1L;
 
         mockMvc.perform(get("/users/{userId}", userId))
@@ -44,9 +42,8 @@ class UserControllerIT {
         verify(userService).getUserById(userId);
     }
 
-    @SneakyThrows
     @Test
-    void getAllUsers_whenUsersCreated_thenReturnUsersListAndStatusOk() {
+    void getAllUsers_whenUsersCreated_thenReturnUsersListAndStatusOk() throws Exception {
         UserDto userDto = new UserDto();
         userDto.setName("name");
         userDto.setEmail("email@mail.com");
@@ -67,9 +64,8 @@ class UserControllerIT {
         assertEquals(objectMapper.writeValueAsString(userDtoList), result);
     }
 
-    @SneakyThrows
     @Test
-    void createUser_whenUserIsValid_thenReturnSavedUserAndStatusOk() {
+    void createUser_whenUserIsValid_thenReturnSavedUserAndStatusOk() throws Exception {
         UserDto userDto = new UserDto();
         userDto.setName("name");
         userDto.setEmail("email@mail.com");
@@ -87,42 +83,9 @@ class UserControllerIT {
         assertEquals(objectMapper.writeValueAsString(userDto), result);
         verify(userService).createUser(userDto);
     }
-    /*
-    @SneakyThrows
+
     @Test
-    void createUser_whenUserEmailIsNotValid_thenStatusBadRequest() {
-        UserDto userDto = new UserDto();
-        userDto.setName("name");
-        userDto.setEmail("emailmail.com");
-
-        mockMvc.perform(post("/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(userDto)))
-            .andExpect(status().isBadRequest());
-
-        verify(userService, never()).createUser(userDto);
-    }
-
-    @SneakyThrows
-    @Test
-    void updateUser_whenUserEmailIsNotValid_thenStatusBadRequest() {
-        long userId = 1L;
-        UserDto userDto = new UserDto();
-        userDto.setEmail("email.ru");
-
-        mockMvc.perform(patch("/users/{userId}", userId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(userDto)))
-            .andExpect(status().isBadRequest());
-
-        verify(userService, never()).updateUser(userDto, userId);
-    }
-
-     */
-
-    @SneakyThrows
-    @Test
-    void updateUser_whenUserIsValid_thenReturnUpdatedUserAndStatusOk() {
+    void updateUser_whenUserIsValid_thenReturnUpdatedUserAndStatusOk() throws Exception {
         long userId = 1L;
         UserDto userDto = new UserDto();
         userDto.setName("newName");
@@ -139,9 +102,8 @@ class UserControllerIT {
         assertEquals(objectMapper.writeValueAsString(userService.updateUser(userDto, userId)), result);
     }
 
-    @SneakyThrows
     @Test
-    void deleteUser_ifUserIsCreated_thenStatusOk() {
+    void deleteUser_ifUserIsCreated_thenStatusOk() throws Exception {
         long userId = 1L;
 
         mockMvc.perform(delete("/users/{userId}", userId))
