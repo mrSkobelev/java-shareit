@@ -2,7 +2,6 @@ package ru.practicum.shareit.booking.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -173,27 +172,18 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private User validUser(long userId) {
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isEmpty()) {
-            throw new NotFoundException("Не найден пользователь с id: " + userId);
-        }
-        return user.get();
+        return userRepository.findById(userId).orElseThrow(
+            () -> new NotFoundException("Не найден пользователь с id: " + userId));
     }
 
     private Booking validBooking(long bookingId) {
-        Optional<Booking> optionalBooking = bookingRepository.findById(bookingId);
-        if (optionalBooking.isEmpty()) {
-            throw new NotFoundException("Не найдена аренда с id: " + bookingId);
-        }
-        return optionalBooking.get();
+        return bookingRepository.findById(bookingId).orElseThrow(
+            () -> new NotFoundException("Не найдена аренда с id: " + bookingId));
     }
 
     private Item validItem(long itemId) {
-        Optional<Item> item = itemRepository.findById(itemId);
-        if (item.isEmpty()) {
-            throw new NotFoundException("Не найден товар с id: " + itemId);
-        }
-        return item.get();
+        return itemRepository.findById(itemId).orElseThrow(
+            () -> new NotFoundException("Не найден товар с id: " + itemId));
     }
 
     private void validDate(BookingDto bookingDto) {

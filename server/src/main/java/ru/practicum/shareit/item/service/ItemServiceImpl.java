@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -177,27 +176,18 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private User validUser(Long userId) {
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isEmpty()) {
-            throw new NotFoundException("Не найден пользователь с id: " + userId);
-        }
-        return user.get();
+        return userRepository.findById(userId).orElseThrow(
+            () -> new NotFoundException("Не найден пользователь с id: " + userId));
     }
 
     private ItemRequest validItemRequest(Long itemRequestId) {
-        Optional<ItemRequest> optionalItemRequest = itemRequestsRepository.findById(itemRequestId);
-        if (optionalItemRequest.isEmpty()) {
-            throw new NotFoundException("Не найден запрос аренды с id: " + itemRequestId);
-        }
-        return optionalItemRequest.get();
+        return itemRequestsRepository.findById(itemRequestId).orElseThrow(
+            () -> new NotFoundException("Не найден запрос аренды с id: " + itemRequestId));
     }
 
     private Item validItem(Long itemId) {
-        Optional<Item> item = itemRepository.findById(itemId);
-        if (item.isEmpty()) {
-            throw new NotFoundException("Не найден товар с id: " + itemId);
-        }
-        return item.get();
+        return itemRepository.findById(itemId).orElseThrow(
+            () -> new NotFoundException("Не найден товар с id: " + itemId));
     }
 
     private void validPagination(Integer from, Integer size) {
