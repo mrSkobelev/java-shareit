@@ -19,7 +19,6 @@ import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
-import ru.practicum.shareit.exception.WrongOwnerException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.model.User;
@@ -40,7 +39,7 @@ public class BookingServiceImpl implements BookingService {
 
         if (booking.getBooker().getId() != userId &&
             booking.getItem().getOwner().getId() != userId) {
-            throw new WrongOwnerException("Доступно только для владельца вещи или автора аренды");
+            throw new NotFoundException("Доступно только для владельца вещи или автора аренды");
         }
 
         return BookingMapper.toBookingInfoDto(booking);
@@ -130,7 +129,7 @@ public class BookingServiceImpl implements BookingService {
         User owner = item.getOwner();
 
         if (booker.getId() == owner.getId()) {
-            throw new WrongOwnerException("Владелец не может быть арендатором");
+            throw new NotFoundException("Владелец не может быть арендатором");
         }
         if (!item.getAvailable()) {
             throw new ValidationException("Товар с id: " + item.getId() + " недоступен для аренды");
@@ -156,7 +155,7 @@ public class BookingServiceImpl implements BookingService {
         User owner = validUser(ownerId);
 
         if (booking.getBooker().getId() == owner.getId()) {
-            throw new WrongOwnerException("Только владелец может менять статус аренды с id: " + bookingId);
+            throw new NotFoundException("Только владелец может менять статус аренды с id: " + bookingId);
         }
 
         if (approved) {
@@ -200,11 +199,6 @@ public class BookingServiceImpl implements BookingService {
     private void validDate(BookingDto bookingDto) {
         LocalDateTime start = bookingDto.getStart();
         LocalDateTime end = bookingDto.getEnd();
-        LocalDateTime now = LocalDateTime.now();
-
-        if (bookingDto.getStart() == null || bookingDto.getEnd() == null) {
-            throw new ValidationException("Отсутствует или конец аренды");
-        }
 
         if (start.equals(end)) {
             throw new ValidationException("Начало аренды не может совпадать с окончанием");
@@ -212,10 +206,6 @@ public class BookingServiceImpl implements BookingService {
 
         if (start.isAfter(end)) {
             throw new ValidationException("Начало аренды не может быть после ее окончания");
-        }
-
-        if (start.isBefore(now)) {
-            throw new ValidationException("Начало аренды не может быть в прошлом");
         }
     }
 

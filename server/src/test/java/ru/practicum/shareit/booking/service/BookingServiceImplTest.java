@@ -29,7 +29,6 @@ import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
-import ru.practicum.shareit.exception.WrongOwnerException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.model.User;
@@ -128,7 +127,7 @@ class BookingServiceImplTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(booker));
         when(bookingRepository.findById(bookingId)).thenReturn(Optional.of(booking));
 
-        WrongOwnerException ex = assertThrows(WrongOwnerException.class,
+        NotFoundException ex = assertThrows(NotFoundException.class,
             () -> bookingService.getBookingById(userId, bookingId));
 
         assertEquals("Доступно только для владельца вещи или автора аренды", ex.getMessage());
@@ -513,7 +512,7 @@ class BookingServiceImplTest {
     }
 
     @Test
-    void getBookingByOwnerId_whenStateWaiting_thenReturnBookingLits() {
+    void getBookingByOwnerId_whenStateWaiting_thenReturnBookingList() {
         long ownerId = 1L;
         String stateParam = "waiting";
         BookingState.checkState(stateParam);
@@ -552,7 +551,7 @@ class BookingServiceImplTest {
     void getBookingByOwnerId_whenStateRejected_thenReturnBookingList() {
         long ownerId = 1L;
         String stateParam = "rejected";
-        BookingState.checkState(stateParam);
+        BookingStatus.from(stateParam);
         int from = 2;
         int size = 5;
 
@@ -661,7 +660,7 @@ class BookingServiceImplTest {
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item));
 
 
-        WrongOwnerException ex = assertThrows(WrongOwnerException.class, () -> bookingService
+        NotFoundException ex = assertThrows(NotFoundException.class, () -> bookingService
             .createBooking(bookerId, bookingDto));
 
         assertEquals("Владелец не может быть арендатором", ex.getMessage());
@@ -753,6 +752,7 @@ class BookingServiceImplTest {
     void approveBooking_whenNotOwnerTryChangeApprove_thenReturnException() {
         long userId = 1;
         long bookingId = 1;
+        String status = "APPROVED";
 
         Item item = new Item();
         User owner = new User();
@@ -763,15 +763,30 @@ class BookingServiceImplTest {
 
         booking.setItem(item);
         booking.setBooker(new User());
-        booking.setStatus(BookingStatus.APPROVED);
+        booking.setStatus(BookingStatus.from(status));
 
         when(bookingRepository.findById(bookingId)).thenReturn(Optional.of(booking));
         when(userRepository.findById(userId)).thenReturn(Optional.of(new User()));
 
-        WrongOwnerException ex = assertThrows(WrongOwnerException.class,
+        NotFoundException ex = assertThrows(NotFoundException.class,
             () -> bookingService.approveBooking(userId, bookingId, true));
 
         assertEquals("Только владелец может менять статус аренды с id: " + bookingId, ex.getMessage());
         verify(bookingRepository, never()).save(booking);
+    }
+
+    @Test
+    void testBookingState() {
+        String waiting = "WAITING";
+        String approved = "APPROVED";
+        String rejected = "REJECTED";
+        String canceled = "CANCELED";
+        String unknown = "unknown";
+
+        assertEquals(BookingStatus.WAITING, BookingStatus.from(waiting));
+        assertEquals(BookingStatus.APPROVED, BookingStatus.from(approved));
+        assertEquals(BookingStatus.REJECTED, BookingStatus.from(rejected));
+        assertEquals(BookingStatus.CANCELED, BookingStatus.from(canceled));
+        assertEquals(BookingStatus.WAITING, BookingStatus.from(unknown));
     }
 }

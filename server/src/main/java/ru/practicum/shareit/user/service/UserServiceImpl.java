@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.exception.EmptyFieldsException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
@@ -47,7 +46,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto createUser(UserDto userDto) {
         log.info("Создать пользователя " + userDto.getEmail());
-        validCreation(userDto);
         User user = UserMapper.toUser(userDto);
         User savedUser = userRepository.save(user);
         return UserMapper.toUserDto(savedUser);
@@ -85,12 +83,5 @@ public class UserServiceImpl implements UserService {
             throw new NotFoundException("Не найден пользователь с id: " + userId);
         }
         return user.get();
-    }
-
-    private void validCreation(UserDto userDto) {
-        if (userDto.getEmail() == null || userDto.getName() == null ||
-            userDto.getEmail().isBlank() || userDto.getName().isBlank()) {
-            throw new EmptyFieldsException("Не все поля заполнены для создания пользователя");
-        }
     }
 }
