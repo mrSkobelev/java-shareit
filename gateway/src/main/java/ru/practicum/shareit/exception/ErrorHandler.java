@@ -1,6 +1,5 @@
 package ru.practicum.shareit.exception;
 
-import java.util.Arrays;
 import javax.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,7 +17,6 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDto handleValidation(final Exception e) {
         log.error("error = " + e.getMessage() + ", httpStatus = " + HttpStatus.BAD_REQUEST);
-        log.error(Arrays.toString(e.getStackTrace()));
         ErrorDto errorDto = new ErrorDto();
         errorDto.setError(e.getMessage());
         return errorDto;
@@ -28,7 +26,6 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDto handleEmptyFields(final Exception e) {
         log.error("error = " + e.getMessage() + ", httpStatus = " + HttpStatus.BAD_REQUEST);
-        log.error(Arrays.toString(e.getStackTrace()));
         ErrorDto errorDto = new ErrorDto();
         errorDto.setError(e.getMessage());
         return errorDto;
@@ -38,7 +35,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorDto handleException(final Exception e) {
         log.error("error = " + e.getMessage() + ", httpStatus = " + HttpStatus.INTERNAL_SERVER_ERROR);
-        log.error(Arrays.toString(e.getStackTrace()));
+        log.error("trace", e);
         ErrorDto errorDto = new ErrorDto();
         errorDto.setError(e.getMessage());
         return errorDto;
